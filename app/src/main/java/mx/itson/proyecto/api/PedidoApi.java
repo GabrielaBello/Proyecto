@@ -19,5 +19,6 @@ public interface PedidoApi {
 
     @DELETE("api/pedidos.php")
     Call<Void> eliminarPedido(@Query("id") int id);
+
 }
 

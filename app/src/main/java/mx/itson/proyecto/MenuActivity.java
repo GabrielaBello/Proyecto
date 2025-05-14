@@ -31,7 +31,7 @@ public class MenuActivity extends AppCompatActivity {
 
         // Crear instancia Retrofit para hacer llamadas al API
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://93b4-2806-263-8400-17b1-4530-ace9-63ae-9cb2.ngrok-free.app/") // Reemplaza con tu URL de ngrok real
+                .baseUrl("https://00dd-201-175-208-43.ngrok-free.app/") // Reemplaza con tu URL de ngrok real
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -72,7 +72,7 @@ public class MenuActivity extends AppCompatActivity {
 
             // Texto del pedido (solo nombre de pizza)
             TextView txtPedido = new TextView(this);
-            txtPedido.setText("Pizza: " + pedido.getNombre_pizza());
+            txtPedido.setText(pedido.getNombre_pizza());
             txtPedido.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
             txtPedido.setTextSize(14);
             txtPedido.setTextColor(0xFF333333);
