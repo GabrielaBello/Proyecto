@@ -19,6 +19,20 @@
             android:textColor="#E53935"
             android:layout_marginBottom="16dp" />
 
+        <!-- Detalles del pedido -->
+        <TextView
+            android:id="@+id/txtDetallePedido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Aquí irán los detalles del pedido"
+            android:textColor="#212121"
+            android:layout_marginTop="8dp"
+            android:textSize="16sp"
+            android:padding="8dp"
+            android:background="#EEEEEE"
+            android:elevation="2dp" />
+
+
         <!-- Texto de advertencia -->
         <TextView
             android:layout_width="wrap_content"

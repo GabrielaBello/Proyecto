@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,101 +9,65 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Nombre y dirección -->
+        <!-- Cliente -->
         <TextView
             android:id="@+id/txtNombreCliente"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cliente: Juan Pérez"
-            android:textSize="16sp"
+            android:text="Cliente: "
             android:textStyle="bold"
-            android:layout_marginBottom="4dp" />
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp" />
 
+        <!-- Pizza -->
         <TextView
-            android:id="@+id/txtDireccionCliente"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Dirección: Calle Falsa 123"
-            android:layout_marginBottom="16dp" />
-
-        <!-- Pizza Personalizada Expandible -->
-        <LinearLayout
-            android:id="@+id/header_pizza_personalizada"
+            android:id="@+id/txtNombrePizza"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="12dp"
-            android:background="#EEEEEE"
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_marginTop="12dp">
+            android:text="Pizza: " />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Pizza personalizada (1)"
-                android:textStyle="bold"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/flecha_pizza_personalizada"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="↓"
-                android:textSize="18sp" />
-        </LinearLayout>
-
-        <!-- Contenido Expandible -->
-        <LinearLayout
-            android:id="@+id/contenido_pizza_personalizada"
+        <!-- Descripción -->
+        <TextView
+            android:id="@+id/txtDescripcion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:paddingLeft="24dp"
-            android:paddingBottom="12dp">
+            android:text="Descripción: " />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tamaño: Grande" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ingredientes: Jamón, Piña, Extra queso" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Complementos: Refresco" />
-        </LinearLayout>
-
-        <!-- Otra pizza del menú -->
+        <!-- Cantidad -->
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/txtCantidad"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pizza de Peperoni (1)\nTamaño: Mediana"
-            android:layout_marginTop="16dp" />
+            android:text="Cantidad: " />
 
-        <!-- Costo total -->
+        <!-- Fecha -->
+        <TextView
+            android:id="@+id/txtFecha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fecha: " />
+
+        <!-- Total -->
         <TextView
             android:id="@+id/txtCostoTotal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Costo total: $280.00"
-            android:textSize="18sp"
+            android:text="Total: "
             android:textStyle="bold"
-            android:layout_marginTop="24dp"
+            android:textSize="18sp"
+            android:layout_marginTop="16dp"
             android:gravity="end" />
 
-        <!-- Botón Terminar Orden -->
+        <!-- Botón -->
         <Button
             android:id="@+id/btnTerminarOrden"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Terminar orden"
-            android:layout_marginTop="32dp" />
+            android:layout_marginTop="24dp" />
+
     </LinearLayout>
 </ScrollView>
+
+
+

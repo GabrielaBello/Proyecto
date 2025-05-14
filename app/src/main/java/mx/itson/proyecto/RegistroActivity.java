@@ -1,21 +1,22 @@
 package mx.itson.proyecto;
 
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import mx.itson.proyecto.db.DbHelper;
+import mx.itson.proyecto.api.ApiClient;
+import mx.itson.proyecto.api.EmpleadoApi;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegistroActivity extends AppCompatActivity {
 
-    private EditText edID, edNombres, edApellidos, edCorreo, edUsuario;
+    private EditText edID, edNombres, edCorreo, edUsuario;
     private Button btnIniciar;
 
     @Override
@@ -23,57 +24,53 @@ public class RegistroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
 
-        edID = findViewById(R.id.edID);
         edNombres = findViewById(R.id.edNombres);
-        edApellidos = findViewById(R.id.edApellidos);
+
         edCorreo = findViewById(R.id.edCorreo);
-        edUsuario = findViewById(R.id.edUsuario); // Contraseña
+        edUsuario = findViewById(R.id.edUsuario);
         btnIniciar = findViewById(R.id.btnIniciar);
 
         btnIniciar.setOnClickListener(v -> {
-            String id = edID.getText().toString().trim();
             String nombre = edNombres.getText().toString().trim();
-            String apellidos = edApellidos.getText().toString().trim();
             String correo = edCorreo.getText().toString().trim();
             String contrasena = edUsuario.getText().toString().trim();
 
-            if (id.isEmpty() || nombre.isEmpty() || apellidos.isEmpty() || correo.isEmpty() || contrasena.isEmpty()) {
+            // Verificar si los campos están vacíos
+            if (nombre.isEmpty() || correo.isEmpty() || contrasena.isEmpty()) {
                 Toast.makeText(this, getString(R.string.msg_fill_all), Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            try {
-                int idInt = Integer.parseInt(id);
+            // Crear un objeto Empleado con los datos ingresados
+            Empleado empleado = new Empleado(nombre, correo, contrasena);
 
-                DbHelper dbHelper = new DbHelper(this);
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
+            // Crear el objeto de Retrofit para el registro
+            EmpleadoApi apiInterface = ApiClient.getClient().create(EmpleadoApi.class);
 
-                ContentValues values = new ContentValues();
-                values.put("id", idInt);
-                values.put("nombre", nombre);
-                values.put("apellidos", apellidos);
-                values.put("correo", correo);
-                values.put("contrasena", contrasena);
+            Call<EmpleadoResponse> call = apiInterface.registrarEmpleado(empleado);
 
-                long result = db.insert("usuarios", null, values);
-
-                if (result != -1) {
-                    Toast.makeText(this, getString(R.string.msg_registered), Toast.LENGTH_SHORT).show();
-                    Log.d("Registro", "Usuario insertado con ID SQLite: " + result);
-                    startActivity(new Intent(this, MainActivity.class));
-                    finish();
-                } else {
-                    Toast.makeText(this, "Error al registrar usuario (¿ID duplicado?)", Toast.LENGTH_LONG).show();
-                    Log.e("Registro", "Fallo en la inserción");
+            // Realizar la llamada asíncrona
+            call.enqueue(new Callback<EmpleadoResponse>() {
+                @Override
+                public void onResponse(Call<EmpleadoResponse> call, Response<EmpleadoResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        EmpleadoResponse empleadoResponse = response.body();
+                        if (empleadoResponse.isSuccess()) {
+                            Toast.makeText(RegistroActivity.this, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(RegistroActivity.this, MainActivity.class));
+                            finish();
+                        } else {
+                            Toast.makeText(RegistroActivity.this, "Error al registrar usuario", Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 }
 
-                db.close();
-            } catch (NumberFormatException e) {
-                Toast.makeText(this, "ID inválido", Toast.LENGTH_SHORT).show();
-            } catch (Exception e) {
-                Toast.makeText(this, "Error inesperado: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                Log.e("Registro", "Excepción: ", e);
-            }
+                @Override
+                public void onFailure(Call<EmpleadoResponse> call, Throwable t) {
+                    Toast.makeText(RegistroActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
     }
 }
+

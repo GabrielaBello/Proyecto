@@ -1,0 +1,31 @@
+<!-- item_pedido.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/nombrePizza"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Nombre Pizza"
+        android:textSize="16sp"
+        android:gravity="start"
+        android:paddingEnd="8dp" />
+
+    <Button
+        android:id="@+id/verPedidoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ver Pedido" />
+
+    <Button
+        android:id="@+id/eliminarButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Eliminar" />
+
+</LinearLayout>
+

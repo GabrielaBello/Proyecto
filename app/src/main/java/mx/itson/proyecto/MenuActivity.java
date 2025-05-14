@@ -2,60 +2,130 @@ package mx.itson.proyecto;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import java.util.List;
+import mx.itson.proyecto.api.PedidoApi;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MenuActivity extends AppCompatActivity {
+
+    private LinearLayout contenedorPedidos;
+    private PedidoApi pedidoApi;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        // Botones "Ver pedido"
-        Button btnVerPedido1 = findViewById(R.id.btnVerPedido1);
-        Button btnVerPedido2 = findViewById(R.id.btnVerPedido2);
-        Button btnVerPedido3 = findViewById(R.id.btnVerPedido3);
-        Button btnVerPedido4 = findViewById(R.id.btnVerPedido4);
-        Button btnVerPedido5 = findViewById(R.id.btnVerPedido5);
-        Button btnVerPedido6 = findViewById(R.id.btnVerPedido6);
+        contenedorPedidos = findViewById(R.id.contenedorPedidos);
 
-        // Botones "Eliminar pedido"
-        Button btnEliminarPedido1 = findViewById(R.id.btnEliminarPedido1);
-        Button btnEliminarPedido2 = findViewById(R.id.btnEliminarPedido2);
-        Button btnEliminarPedido3 = findViewById(R.id.btnEliminarPedido3);
-        Button btnEliminarPedido4 = findViewById(R.id.btnEliminarPedido4);
-        Button btnEliminarPedido5 = findViewById(R.id.btnEliminarPedido5);
-        Button btnEliminarPedido6 = findViewById(R.id.btnEliminarPedido6);
+        // Crear instancia Retrofit para hacer llamadas al API
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://93b4-2806-263-8400-17b1-4530-ace9-63ae-9cb2.ngrok-free.app/") // Reemplaza con tu URL de ngrok real
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
-        // Listener genérico para ver pedidos
-        View.OnClickListener verPedidoListener = v -> {
-            Intent intent = new Intent(MenuActivity.this, VerPedidoActivity.class);
-            // Puedes usar extras si deseas enviar el número de pedido
-            // intent.putExtra("pedidoIndex", 0);
-            startActivity(intent);
-        };
+        pedidoApi = retrofit.create(PedidoApi.class);
 
-        btnVerPedido1.setOnClickListener(verPedidoListener);
-        btnVerPedido2.setOnClickListener(verPedidoListener);
-        btnVerPedido3.setOnClickListener(verPedidoListener);
-        btnVerPedido4.setOnClickListener(verPedidoListener);
-        btnVerPedido5.setOnClickListener(verPedidoListener);
-        btnVerPedido6.setOnClickListener(verPedidoListener);
-
-        // Listener genérico para eliminar pedidos
-        btnEliminarPedido1.setOnClickListener(v -> eliminarPedido(0));
-        btnEliminarPedido2.setOnClickListener(v -> eliminarPedido(1));
-        btnEliminarPedido3.setOnClickListener(v -> eliminarPedido(2));
-        btnEliminarPedido4.setOnClickListener(v -> eliminarPedido(3));
-        btnEliminarPedido5.setOnClickListener(v -> eliminarPedido(4));
-        btnEliminarPedido6.setOnClickListener(v -> eliminarPedido(5));
+        // Cargar los pedidos desde la API
+        cargarPedidosDesdeAPI();
     }
 
-    private void eliminarPedido(int index) {
-        Intent intent = new Intent(MenuActivity.this, CancelarPedidoActivity.class);
-        intent.putExtra("pedidoIndex", index);
-        startActivity(intent);
+    private void cargarPedidosDesdeAPI() {
+        Call<List<Pedido>> call = pedidoApi.obtenerPedidos();
+
+        call.enqueue(new Callback<List<Pedido>>() {
+            @Override
+            public void onResponse(Call<List<Pedido>> call, Response<List<Pedido>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    mostrarPedidos(response.body());
+                } else {
+                    Toast.makeText(MenuActivity.this, "Error al obtener pedidos", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Pedido>> call, Throwable t) {
+                Toast.makeText(MenuActivity.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e("API", "Error", t);
+            }
+        });
+    }
+
+    private void mostrarPedidos(List<Pedido> pedidos) {
+        contenedorPedidos.removeAllViews();
+
+        for (Pedido pedido : pedidos) {
+            LinearLayout layout = new LinearLayout(this);
+            layout.setOrientation(LinearLayout.HORIZONTAL);
+            layout.setPadding(8, 16, 8, 16);
+
+            // Texto del pedido (solo nombre de pizza)
+            TextView txtPedido = new TextView(this);
+            txtPedido.setText("Pizza: " + pedido.getNombre_pizza());
+            txtPedido.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+            txtPedido.setTextSize(14);
+            txtPedido.setTextColor(0xFF333333);
+
+            // Botón Ver
+            Button btnVer = new Button(this);
+            btnVer.setText("Ver pedido");
+            btnVer.setBackgroundColor(0xFF6B8E23);
+            btnVer.setTextColor(0xFFFFFFFF);
+            btnVer.setOnClickListener(v -> {
+                Intent intent = new Intent(MenuActivity.this, VerPedidoActivity.class);
+                intent.putExtra("pedido_id", pedido.getId()); // Pasar el ID del pedido
+                startActivity(intent);
+            });
+
+            // Botón Eliminar
+            Button btnEliminar = new Button(this);
+            btnEliminar.setText("Eliminar");
+            btnEliminar.setBackgroundColor(0xFFD32F2F);
+            btnEliminar.setTextColor(0xFFFFFFFF);
+            btnEliminar.setOnClickListener(v -> {
+                eliminarPedido(pedido.getId(), layout);
+            });
+
+            layout.addView(txtPedido);
+            layout.addView(btnVer);
+            layout.addView(btnEliminar);
+
+            contenedorPedidos.addView(layout);
+        }
+    }
+
+    private void eliminarPedido(int idPedido, View layoutPedido) {
+        // Eliminar el pedido a través de la API
+        pedidoApi.eliminarPedido(idPedido).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(MenuActivity.this, "Pedido eliminado", Toast.LENGTH_SHORT).show();
+                    contenedorPedidos.removeView(layoutPedido);
+                } else {
+                    Toast.makeText(MenuActivity.this, "Error al eliminar el pedido", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(MenuActivity.this, "Error al eliminar el pedido", Toast.LENGTH_SHORT).show();
+                Log.e("EliminarPedido", "Error", t);
+            }
+        });
     }
 }
+
+
+

@@ -1,45 +1,57 @@
 package mx.itson.proyecto;
 
+import mx.itson.proyecto.Pedido;
 import android.os.Bundle;
-import android.view.View;
+import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
-import mx.itson.proyecto.Pedido;
-import mx.itson.proyecto.PedidoManager;
 
 public class CancelarPedidoActivity extends AppCompatActivity {
 
     TextView txtDetallePedido;
     Button btnEliminar, btnCancelar;
+    Pedido pedidoSeleccionado; // Para almacenar el pedido actual
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cancelar_pedido);
 
+        txtDetallePedido = findViewById(R.id.txtDetallePedido);
         btnEliminar = findViewById(R.id.btnEliminar);
         btnCancelar = findViewById(R.id.btnCancelar);
 
-        // Aquí deberías asignar un pedido seleccionado, por ejemplo, el primer pedido.
-        // Simulamos que el pedido es el primero de la lista:
-        Pedido pedidoSeleccionado = PedidoManager.pedidos.get(0);  // Asume que seleccionas el primero
+        // Aquí deberías obtener el pedido de la base de datos o de un intent
+        // Simulamos que es el primer pedido para la demostración:
+        pedidoSeleccionado = (Pedido) getIntent().getSerializableExtra("pedido");
+
+        if (pedidoSeleccionado != null) {
+            txtDetallePedido.setText(pedidoSeleccionado.toString());
+        } else {
+            Toast.makeText(this, "No se pudo cargar el pedido.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
         txtDetallePedido.setText(pedidoSeleccionado.toString());
 
-        // Eliminar
+        // Eliminar pedido
         btnEliminar.setOnClickListener(v -> {
-            if (PedidoManager.pedidos.size() > 0) {
-                // Eliminar el primer pedido o el seleccionado
-                PedidoManager.eliminarPedido(0);  // Asumiendo que el pedido a eliminar es el primero
+            if (pedidoSeleccionado != null) {
+                eliminarPedido(pedidoSeleccionado.getId());
                 Toast.makeText(this, "Pedido eliminado.", Toast.LENGTH_SHORT).show();
-
-                // Después de eliminar, cerrar la actividad
                 finish();
             } else {
-                Toast.makeText(this, "No hay pedidos para eliminar.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "No hay pedido para eliminar.", Toast.LENGTH_SHORT).show();
             }
         });
 
         // Cancelar
         btnCancelar.setOnClickListener(v -> finish());
     }
+
+    private void eliminarPedido(int id) {
+        // Aquí iría la lógica para eliminar el pedido de la base de datos o la API
+    }
 }
+
+

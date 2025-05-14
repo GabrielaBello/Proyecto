@@ -18,22 +18,8 @@
             android:layout_height="100dp" />
 
         <EditText
-            android:id="@+id/edID"
-            android:hint="@string/hint_user_id"
-            android:inputType="number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <EditText
             android:id="@+id/edNombres"
             android:hint="@string/hint_name"
-            android:inputType="textPersonName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <EditText
-            android:id="@+id/edApellidos"
-            android:hint="@string/hint_lastname"
             android:inputType="textPersonName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
