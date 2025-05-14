@@ -35,7 +35,7 @@ public class VerPedidoActivity extends AppCompatActivity {
 
         cargarPedido();
 
-        // Acción del botón "Terminar Orden"
+        // Acción del botón "Terminar Orden."
         btnTerminarOrden.setOnClickListener(v -> {
             int idPedido = getIntent().getIntExtra("pedido_id", -1);
             if (idPedido != -1) {
