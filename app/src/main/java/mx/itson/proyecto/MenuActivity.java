@@ -77,7 +77,7 @@ public class MenuActivity extends AppCompatActivity {
             txtPedido.setTextSize(14);
             txtPedido.setTextColor(0xFF333333);
 
-            // Botón Ver
+            // Botón Ver pedidos
             Button btnVer = new Button(this);
             btnVer.setText("Ver pedido");
             btnVer.setBackgroundColor(0xFF6B8E23);
